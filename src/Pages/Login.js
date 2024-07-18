@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [cookies, setCookies] = useCookies(["access_token", "user_id"]);
+  const navigate = useNavigate();
   const BASE_URL = "http://localhost:5000";
+
+  useEffect(() => {
+    if (cookies.access_token && cookies.user_id) {
+      navigate("/");
+    }
+  }, [cookies, navigate]);
 
   const submitHandler = async () => {
     console.log("The function is called");
@@ -15,6 +25,9 @@ const Login = () => {
         password,
       });
       console.log(res);
+      setCookies("access_token", res.data.token);
+      setCookies("user_id", res.data.userId);
+      navigate("/");
     } catch (err) {
       setErrorMessage(err.response.data.message);
     }

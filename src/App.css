@@ -25,3 +25,64 @@
   color: red;
   font-size: small;
 }
+
+.navbar{
+  display: flex;
+  justify-content: center;
+  margin: 5px;
+}
+
+.nav-element {
+  margin: 5px 15px;
+  cursor: pointer;
+  font-size: larger;
+  font-weight: 200;
+}
+
+.clientBox{
+  border: 2px solid green;
+  margin: 15px;
+}
+
+.clientBoxElement{
+  font-size: larger;
+}
+
+.pseudoNav{
+  display: flex;
+  justify-content: space-around;
+}
+
+.pseudoNavElement{
+  margin: 10px 15px;
+    cursor: pointer;
+    font-size: larger;
+    font-weight: 200;
+}
+
+.InflencersForm{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.infFormElement{
+  font-size: larger;
+  font-weight: 500;
+}
+
+.infFormElementspecial{
+  border: 1px solid blue;
+  margin: 12px 0px;
+}
+
+.addButton{
+  margin-top: 5px;
+  border: 1px solid black;
+  padding: 2px;
+  font-size: large;
+  cursor: pointer;
+  display: block;
+}
