@@ -86,3 +86,36 @@
   cursor: pointer;
   display: block;
 }
+
+.ilPageContainer{
+  display: flex;
+  justify-items: center;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.ilPageLeft{
+  overflow: hidden;
+  width: 50vw;
+}
+
+.ilPageRight{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: large;
+}
+
+.ilPageRightButtons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ilPageRightItems{
+  margin: 15px 0px;
+}
+
+.ilnav{
+  cursor: pointer;
+}

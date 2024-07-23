@@ -24,12 +24,12 @@ const Login = () => {
         email,
         password,
       });
-      console.log(res);
-      setCookies("access_token", res.data.token);
-      setCookies("user_id", res.data.userId);
+      if (res) console.log(res);
+      setCookies("access_token", res?.data?.token);
+      setCookies("user_id", res?.data?.userId);
       navigate("/");
     } catch (err) {
-      setErrorMessage(err.response.data.message);
+      setErrorMessage(err?.message);
     }
   };
 

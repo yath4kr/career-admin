@@ -49,22 +49,25 @@ const Influencers = () => {
   };
 
   const submitHandler = async () => {
-    const data = {
-      name,
-      title,
-      description,
-      books,
-      courses,
-      imageUrl,
-    };
-    console.log(data);
     try {
+      const data = {
+        name,
+        title,
+        description,
+        books,
+        courses,
+        imageUrl,
+      };
+
+      console.log("Data to be submitted:", data);
       const res = await axios.post(`${BASE_URL}/admins/addInfluencer`, data, {
         headers: { authorization: cookies.access_token },
       });
       console.log(res);
+      window.alert(`${res.data.message}`);
+      navigate("/influencersList");
     } catch (err) {
-      console.log(err);
+      return err;
     }
   };
 
@@ -72,7 +75,14 @@ const Influencers = () => {
     <>
       <div className="pseudoNav">
         <Navbar />
-        <div className="pseudoNavElement">InfluencersList</div>
+        <div
+          className="pseudoNavElement"
+          onClick={() => {
+            navigate("/influencersList");
+          }}
+        >
+          InfluencersList
+        </div>
       </div>
       <div className="InflencersForm">
         <div className="infFormElement">
@@ -162,7 +172,13 @@ const Influencers = () => {
             Add Course
           </span>
         </div>
-        <button onClick={submitHandler}>Submit</button>
+        <button
+          onClick={(e) => {
+            submitHandler();
+          }}
+        >
+          Submit
+        </button>
       </div>
       <div>
         {books?.map((book, index) => {

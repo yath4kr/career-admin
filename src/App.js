@@ -4,6 +4,7 @@ import Home from "./Pages/Home";
 import Login from "./Pages/Login";
 import Users from "./Pages/Users";
 import Influencers from "./Pages/Influencers";
+import InfluencersList from "./Pages/InfluencersList";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="users" element={<Users />} />
           <Route path="influencers" element={<Influencers />} />
+          <Route path="influencersList" element={<InfluencersList />} />
         </Routes>
       </BrowserRouter>
     </div>
