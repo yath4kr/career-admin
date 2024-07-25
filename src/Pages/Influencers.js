@@ -15,10 +15,12 @@ const Influencers = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [books, setBooks] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [bookName, setBookName] = useState("");
   const [courseName, setCourseName] = useState("");
   const [bookUrl, setBookUrl] = useState("");
   const [courseUrl, setCourseUrl] = useState("");
+  const [category, setCategory] = useState("");
 
   useEffect(() => {
     if (!cookies.access_token || !cookies.user_id) {
@@ -30,22 +32,19 @@ const Influencers = () => {
 
   const addBookHandler = () => {
     setBooks([...books, { name: bookName, url: bookUrl }]);
-    const bnInp = document.getElementById("bookName");
-    bnInp.value = "";
     setBookName("");
-    const buInp = document.getElementById("bookUrl");
-    buInp.value = "";
     setBookUrl("");
   };
 
   const addCourseHandler = () => {
     setCourses([...courses, { name: courseName, url: courseUrl }]);
-    const cnInp = document.getElementById("courseName");
-    cnInp.value = "";
     setCourseName("");
-    const cuInp = document.getElementById("courseUrl");
-    cuInp.value = "";
     setCourseUrl("");
+  };
+
+  const addCategoryHandler = () => {
+    setCategories([...categories, category]);
+    setCategory("");
   };
 
   const submitHandler = async () => {
@@ -56,18 +55,17 @@ const Influencers = () => {
         description,
         books,
         courses,
+        categories,
         imageUrl,
       };
 
-      console.log("Data to be submitted:", data);
       const res = await axios.post(`${BASE_URL}/admins/addInfluencer`, data, {
         headers: { authorization: cookies.access_token },
       });
-      console.log(res);
       window.alert(`${res.data.message}`);
       navigate("/influencersList");
     } catch (err) {
-      return err;
+      console.error(err);
     }
   };
 
@@ -172,6 +170,22 @@ const Influencers = () => {
             Add Course
           </span>
         </div>
+        <div className="infFormElement infFormElementspecial">
+          <label>Categories : </label>
+          <br />
+          <label>Category : </label>
+          <br />
+          <input
+            onChange={(e) => {
+              setCategory(e.target.value);
+            }}
+            value={category}
+          />
+          <br />
+          <span className="addButton" onClick={addCategoryHandler}>
+            Add Category
+          </span>
+        </div>
         <button
           onClick={(e) => {
             submitHandler();
@@ -181,27 +195,28 @@ const Influencers = () => {
         </button>
       </div>
       <div>
-        {books?.map((book, index) => {
-          return (
-            <div key={index}>
-              {book.name}
-              <br />
-              {book.url}
-            </div>
-          );
-        })}
+        <h3>Books:</h3>
+        {books?.map((book, index) => (
+          <div key={index}>
+            {book.name} - {book.url}
+          </div>
+        ))}
       </div>
       <br />
       <div>
-        {courses?.map((course, index) => {
-          return (
-            <div key={index}>
-              {course.name}
-              <br />
-              {course.url}
-            </div>
-          );
-        })}
+        <h3>Courses:</h3>
+        {courses?.map((course, index) => (
+          <div key={index}>
+            {course.name} - {course.url}
+          </div>
+        ))}
+      </div>
+      <br />
+      <div>
+        <h3>Categories:</h3>
+        {categories?.map((category, index) => (
+          <div key={index}>{category}</div>
+        ))}
       </div>
     </>
   );

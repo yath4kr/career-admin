@@ -16,11 +16,13 @@ const InfluencersList = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [books, setBooks] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [newBookName, setNewBookName] = useState("");
   const [newBookUrl, setNewBookUrl] = useState("");
   const [newCourseName, setNewCourseName] = useState("");
   const [newCourseUrl, setNewCourseUrl] = useState("");
+  const [newCategory, setNewCategory] = useState("");
 
   useEffect(() => {
     if (!cookies.access_token || !cookies.user_id) {
@@ -52,6 +54,7 @@ const InfluencersList = () => {
     setImageUrl(influencers[id]?.imageUrl);
     setBooks(influencers[id]?.books);
     setCourses(influencers[id]?.courses);
+    setCategories(influencers[id]?.categories || []); // Initialize categories
   }
 
   function unSelectHandle() {
@@ -60,8 +63,9 @@ const InfluencersList = () => {
     setTitle("");
     setDescription("");
     setImageUrl("");
-    setBooks(null);
-    setCourses(null);
+    setBooks([]);
+    setCourses([]);
+    setCategories([]);
   }
 
   const deleteHandle = async (id) => {
@@ -88,6 +92,7 @@ const InfluencersList = () => {
       description,
       books,
       courses,
+      categories, // Include categories in the data to be updated
       imageUrl,
     };
 
@@ -99,7 +104,7 @@ const InfluencersList = () => {
           headers: { authorization: cookies.access_token },
         }
       );
-      window.alert("Influencer updated successfully");
+      window.alert(`Influencer updated successfully - ${res.data.message}`);
       setSelected(null);
       window.location.reload();
     } catch (err) {
@@ -108,19 +113,22 @@ const InfluencersList = () => {
   };
 
   function removeBookHandle(bookIndex) {
-    const updatedBooks = selected.books.filter(
-      (_, index) => index !== bookIndex
-    );
+    const updatedBooks = books.filter((_, index) => index !== bookIndex);
     setSelected({ ...selected, books: updatedBooks });
     setBooks(updatedBooks);
   }
 
   function removeCourseHandle(courseIndex) {
-    const updatedCourses = selected.books.filter(
-      (_, index) => index !== courseIndex
-    );
+    const updatedCourses = courses.filter((_, index) => index !== courseIndex);
     setSelected({ ...selected, courses: updatedCourses });
-    setBooks(updatedCourses);
+    setCourses(updatedCourses);
+  }
+
+  function removeCategoryHandle(categoryIndex) {
+    const updatedCategories = categories.filter(
+      (_, index) => index !== categoryIndex
+    );
+    setCategories(updatedCategories);
   }
 
   function addCourseHandle() {
@@ -135,6 +143,12 @@ const InfluencersList = () => {
     const updatedBooks = [...books, newBook];
     setSelected({ ...selected, books: updatedBooks });
     setBooks(updatedBooks);
+  }
+
+  function addCategoryHandle() {
+    const updatedCategories = [...categories, newCategory];
+    setCategories(updatedCategories);
+    setNewCategory("");
   }
 
   return (
@@ -152,179 +166,162 @@ const InfluencersList = () => {
       <h1>This is where you can manage the influencers which already exist.</h1>
       <div className="ilPageContainer">
         <div className="ilPageLeft">
-          <h4>The List : </h4>
-          {influencers.map((influencer, index) => {
-            return (
-              <div className="ilPageItem" key={index}>
-                <img
-                  src={`${influencer.imageUrl}`}
-                  alt={`${influencer.name}`}
-                  height={"150px"}
-                  width={"150px"}
-                />
-                <br />
-                Name : {influencer.name}
-                <br />
-                Title : {influencer.title}
-                <br />
-                Image URL : {influencer.imageUrl}
-                <br />
-                Description : {influencer.description}
-                <br />
-                Books :
-                <br />
-                {influencer.books?.map((book, id) => {
-                  return (
-                    <div key={id}>
-                      {id + 1} : {book.name} - {book.url}{" "}
-                    </div>
-                  );
-                })}
-                <br />
-                Courses :
-                <br />
-                {influencer.courses?.map((course, id) => {
-                  return (
-                    <div key={id}>
-                      {id + 1} : {course.name} - {course.url}
-                    </div>
-                  );
-                })}
-                <br />
-                <button
-                  onClick={() => {
-                    editButtonHandler(index);
-                  }}
-                >
-                  Edit
-                </button>
-                <br />
-              </div>
-            );
-          })}
+          <h4>The List :</h4>
+          {influencers.map((influencer, index) => (
+            <div className="ilPageItem" key={index}>
+              <img
+                src={influencer.imageUrl}
+                alt={influencer.name}
+                height={"150px"}
+                width={"150px"}
+              />
+              <br />
+              Name: {influencer.name}
+              <br />
+              Title: {influencer.title}
+              <br />
+              Image URL: {influencer.imageUrl}
+              <br />
+              Description: {influencer.description}
+              <br />
+              Books:
+              <br />
+              {influencer.books?.map((book, id) => (
+                <div key={id}>
+                  {id + 1}: {book.name} - {book.url}
+                </div>
+              ))}
+              <br />
+              Courses:
+              <br />
+              {influencer.courses?.map((course, id) => (
+                <div key={id}>
+                  {id + 1}: {course.name} - {course.url}
+                </div>
+              ))}
+              <br />
+              Categories:
+              <br />
+              {influencer.categories?.map((category, id) => (
+                <div key={id}>
+                  {id + 1}: {category}
+                </div>
+              ))}
+              <br />
+              <button onClick={() => editButtonHandler(index)}>Edit</button>
+              <br />
+            </div>
+          ))}
         </div>
         <div className="ilPageRight">
-          {!selected ? (
-            <></>
-          ) : (
+          {selected && (
             <div>
               <div className="ilPageRightItems">
-                Name :{" "}
+                Name:{" "}
+                <input value={name} onChange={(e) => setName(e.target.value)} />
+                <br />
+              </div>
+              <div className="ilPageRightItems">
+                Title:{" "}
                 <input
-                  value={selected.name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                  }}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                 />
                 <br />
               </div>
               <div className="ilPageRightItems">
-                Title :{" "}
+                Image URL:{" "}
                 <input
-                  value={selected.title}
-                  onChange={(e) => {
-                    setTitle(e.target.value);
-                  }}
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
                 />
                 <br />
               </div>
               <div className="ilPageRightItems">
-                Image URl :{" "}
-                <input
-                  value={selected.imageUrl}
-                  onChange={(e) => {
-                    setImageUrl(e.target.value);
-                  }}
-                />
-                <br />
-              </div>
-              <div className="ilPageRightItems">
-                Description :
+                Description:
                 <br />
                 <textarea
-                  value={selected.description}
-                  onChange={(e) => {
-                    setDescription(e.target.value);
-                  }}
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
                 <br />
               </div>
               <div className="ilPageRightItems">
-                Books :
+                Books:
                 <br />
-                {selected.books.map((book, ind) => {
-                  return (
-                    <div key={ind}>
-                      {ind + 1}. {book.name} - {book.url}{" "}
-                      <button
-                        onClick={() => {
-                          removeBookHandle(ind);
-                        }}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  );
-                })}
+                {books.map((book, ind) => (
+                  <div key={ind}>
+                    {ind + 1}. {book.name} - {book.url}{" "}
+                    <button onClick={() => removeBookHandle(ind)}>
+                      Remove
+                    </button>
+                  </div>
+                ))}
                 <br />
-                New Book Name :{" "}
+                New Book Name:{" "}
                 <input
-                  onChange={(e) => {
-                    setNewBookName(e.target.value);
-                  }}
+                  value={newBookName}
+                  onChange={(e) => setNewBookName(e.target.value)}
                 />
                 <br />
-                New Book Url :{" "}
+                New Book Url:{" "}
                 <input
-                  onChange={(e) => {
-                    setNewBookUrl(e.target.value);
-                  }}
+                  value={newBookUrl}
+                  onChange={(e) => setNewBookUrl(e.target.value)}
                 />
                 <br />
                 <button onClick={addBookHandle}>Add Book</button>
               </div>
               <br />
               <div className="ilPageRightItems">
-                Courses :
+                Courses:
                 <br />
-                {selected.courses.map((course, ind) => {
-                  return (
-                    <div key={ind}>
-                      {ind + 1}. {course.name} - {course.url}{" "}
-                      <button
-                        onClick={() => {
-                          removeCourseHandle(ind);
-                        }}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  );
-                })}
+                {courses.map((course, ind) => (
+                  <div key={ind}>
+                    {ind + 1}. {course.name} - {course.url}{" "}
+                    <button onClick={() => removeCourseHandle(ind)}>
+                      Remove
+                    </button>
+                  </div>
+                ))}
                 <br />
-                New Course Name :{" "}
+                New Course Name:{" "}
                 <input
-                  onChange={(e) => {
-                    setNewCourseName(e.target.value);
-                  }}
+                  value={newCourseName}
+                  onChange={(e) => setNewCourseName(e.target.value)}
                 />
                 <br />
-                New Course Url :{" "}
+                New Course Url:{" "}
                 <input
-                  onChange={(e) => {
-                    setNewCourseUrl(e.target.value);
-                  }}
+                  value={newCourseUrl}
+                  onChange={(e) => setNewCourseUrl(e.target.value)}
                 />
                 <br />
                 <button onClick={addCourseHandle}>Add Course</button>
               </div>
               <div className="ilPageRightItems">
+                Categories:
+                <br />
+                {categories.map((category, ind) => (
+                  <div key={ind}>
+                    {ind + 1}. {category}{" "}
+                    <button onClick={() => removeCategoryHandle(ind)}>
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <br />
+                New Category:{" "}
+                <input
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                />
+                <br />
+                <button onClick={addCategoryHandle}>Add Category</button>
+              </div>
+              <div className="ilPageRightItems">
                 <div className="ilPageRightButtons">
-                  <button
-                    onClick={() => {
-                      deleteHandle(selected._id);
-                    }}
-                  >
+                  <button onClick={() => deleteHandle(selected._id)}>
                     Delete
                   </button>
                   <br />

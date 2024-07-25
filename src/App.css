@@ -119,3 +119,8 @@
 .ilnav{
   cursor: pointer;
 }
+
+.catPage{
+  display: flex;
+  justify-content: space-around;
+}
